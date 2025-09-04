@@ -297,10 +297,24 @@
     <iframe 
         src="https://typebot.co/customer-support-astrocoach" 
         id="chatbotFrame"
-        style="display: none; width: 100%; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1000; border: none; background: #000000;"
+        style="display: none; width: 100%; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1000; border: none; background-color: #000000;"
         onload="handleFrameLoad()"
         onerror="handleFrameError()">
     </iframe>
+    
+    <!-- Black overlay to prevent white flash -->
+    <div id="blackOverlay" style="
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%; 
+        background-color: #000000; 
+        z-index: 1001; 
+        display: none;
+        opacity: 1;
+        transition: opacity 0.3s ease-out;
+    "></div>
 
     <script>
         // Loading messages to cycle through
@@ -439,12 +453,18 @@
                 setTimeout(() => {
                     const loadingContainer = document.getElementById('loadingContainer');
                     const chatbotFrame = document.getElementById('chatbotFrame');
+                    const blackOverlay = document.getElementById('blackOverlay');
                     
                     if (loadingContainer) {
                         loadingContainer.classList.add('fade-out');
                     }
                     
                     setTimeout(() => {
+                        // Show black overlay first to prevent white flash
+                        if (blackOverlay) {
+                            blackOverlay.style.display = 'block';
+                        }
+                        
                         // Hide loading screen and show chatbot
                         if (loadingContainer) {
                             loadingContainer.style.display = 'none';
@@ -453,11 +473,24 @@
                             chatbotFrame.style.display = 'block';
                             chatbotFrame.style.opacity = '0';
                             chatbotFrame.style.transition = 'opacity 0.5s ease-out';
-                            // Fade in the chatbot
-                            setTimeout(() => {
-                                chatbotFrame.style.opacity = '1';
-                            }, 50);
                         }
+                        
+                        // Wait a moment for iframe content to stabilize, then fade in
+                        setTimeout(() => {
+                            if (chatbotFrame) {
+                                chatbotFrame.style.opacity = '1';
+                            }
+                            
+                            // Remove black overlay after iframe is visible and content loaded
+                            setTimeout(() => {
+                                if (blackOverlay) {
+                                    blackOverlay.style.opacity = '0';
+                                    setTimeout(() => {
+                                        blackOverlay.style.display = 'none';
+                                    }, 300);
+                                }
+                            }, 800); // Give extra time for content to fully load
+                        }, 50);
                         
                         console.log('Chatbot displayed successfully');
                     }, 500);
