@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstroCoach - Connecting you to Astrologer...</title>
+    <style>
+        /* Import Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000000;
+            overflow: hidden;
+        }
+
+        /* Main loading container */
+        .loading-container {
+            background: #000000;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 20px;
+        }
+
+        /* Background animated gradient */
+        .loading-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(172, 145, 254, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(172, 145, 254, 0.08) 0%, transparent 50%);
+            animation: backgroundPulse 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes backgroundPulse {
+            0% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Main content card */
+        .loading-card {
+            background: rgba(172, 145, 254, 0.15);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(172, 145, 254, 0.3);
+            border-radius: 24px;
+            padding: 40px 32px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            box-shadow: 
+                0 8px 32px rgba(172, 145, 254, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: cardFadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes cardFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Logo/Brand area */
+        .brand-area {
+            margin-bottom: 32px;
+        }
+
+        .brand-title {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #ffffff 0%, #ac91fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .brand-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        /* Spinner */
+        .spinner-container {
+            margin-bottom: 28px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80px;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(172, 145, 254, 0.2);
+            border-top: 3px solid #ac91fe;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            position: relative;
+        }
+
+        .spinner::after {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            border: 3px solid transparent;
+            border-top: 3px solid rgba(172, 145, 254, 0.5);
+            border-radius: 50%;
+            animation: spin 2s linear infinite reverse;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Loading text */
+        .loading-text {
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            animation: textPulse 2s ease-in-out infinite;
+        }
+
+        .loading-subtext {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 1.5;
+        }
+
+        @keyframes textPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Progress bar */
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(172, 145, 254, 0.2);
+            border-radius: 2px;
+            margin-top: 24px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ac91fe 0%, #c9b3ff 100%);
+            border-radius: 2px;
+            width: 0%;
+            animation: progressLoad 1s ease-out forwards;
+            position: relative;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+            animation: shimmer 1.5s ease-in-out infinite;
+        }
+
+        @keyframes progressLoad {
+            0% { width: 0%; }
+            20% { width: 30%; }
+            50% { width: 60%; }
+            80% { width: 85%; }
+            100% { width: 100%; }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Hidden iframe for preloading */
+        .preload-frame {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .loading-card {
+                padding: 32px 24px;
+                border-radius: 20px;
+                max-width: 340px;
+            }
+            
+            .brand-title {
+                font-size: 24px;
+            }
+            
+            .loading-text {
+                font-size: 16px;
+            }
+            
+            .spinner {
+                width: 50px;
+                height: 50px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .loading-container {
+                padding: 16px;
+            }
+            
+            .loading-card {
+                padding: 28px 20px;
+                border-radius: 18px;
+            }
+            
+            .brand-title {
+                font-size: 22px;
+            }
+        }
+
+        /* Fade out animation */
+        .fade-out {
+            animation: fadeOut 0.5s ease-in-out forwards;
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-container" id="loadingContainer">
+        <div class="loading-card">
+            <div class="brand-area">
+                <h1 class="brand-title">AstroCoach</h1>
+                <p class="brand-subtitle">Эксперт-астролог</p>
+            </div>
+            
+            <div class="spinner-container">
+                <div class="spinner"></div>
+            </div>
+            
+            <div class="loading-text" id="loadingText">Пожалуйста, подождите...</div>
+            <div class="loading-subtext" id="loadingSubtext">Подключение к эксперту-астрологу...</div>
+
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot iframe that will be shown when loaded -->
+    <iframe 
+        src="https://typebot.co/popup-russian" 
+        id="chatbotFrame"
+        style="display: none; width: 100%; height: 100vh; position: absolute; top: 0; left: 0; z-index: 1000; border: none; background-color: #000000;"
+        onload="handleFrameLoad()"
+        onerror="handleFrameError()">
+    </iframe>
+    
+    <!-- Black overlay to prevent white flash -->
+    <div id="blackOverlay" style="
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%; 
+        background-color: #000000; 
+        z-index: 1001; 
+        display: none;
+        opacity: 1;
+        transition: opacity 0.3s ease-out;
+    "></div>
+
+    <script>
+        // Loading messages to cycle through
+        const loadingMessages = [
+            "Пожалуйста, подождите...",
+            "Инициализация чат-бота...",
+            "Загрузка вашей сессии поддержки...",
+            "Подготовка вашего чата...",
+            "Проверка соединения...",
+            "Почти готово...",
+            "Завершение настройки..."
+        ];
+
+        let messageIndex = 0;
+        let frameLoaded = false;
+        let contentLoaded = false;
+        let minTimeElapsed = false;
+        let hasError = false;
+        let loadStartTime = Date.now();
+
+        // Cycle through loading messages (faster)
+        const messageInterval = setInterval(() => {
+            const loadingText = document.getElementById('loadingText');
+            if (loadingText && !contentLoaded) {
+                loadingText.style.opacity = '0.5';
+                
+                setTimeout(() => {
+                    messageIndex = (messageIndex + 1) % loadingMessages.length;
+                    loadingText.textContent = loadingMessages[messageIndex];
+                    loadingText.style.opacity = '1';
+                }, 50); // Ultra-fast message transitions
+            }
+        }, 200); // Much faster message cycling
+
+        // Ensure minimum loading time for smooth UX (2 seconds)
+        setTimeout(() => {
+            minTimeElapsed = true;
+            console.log('Minimum time elapsed');
+            checkAndShow();
+        }, 2000);
+
+        // Handle successful iframe load
+        function handleFrameLoad() {
+            frameLoaded = true;
+            const loadTime = Date.now() - loadStartTime;
+            console.log(`Typebot iframe loaded in ${loadTime}ms`);
+            
+            // Give the iframe content a moment to fully render
+            setTimeout(() => {
+                checkContentLoaded();
+            }, 500);
+        }
+
+        // Check if the content inside iframe is actually loaded
+        function checkContentLoaded() {
+            const iframe = document.getElementById('chatbotFrame');
+            
+            try {
+                // Try to access iframe content to see if it's loaded
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                
+                if (iframeDoc && iframeDoc.readyState === 'complete') {
+                    contentLoaded = true;
+                    console.log('Iframe content fully loaded');
+                    checkAndShow();
+                } else {
+                    // Check again in a moment
+                    setTimeout(() => {
+                        contentLoaded = true; // Assume loaded after timeout
+                        console.log('Assuming iframe content loaded after timeout');
+                        checkAndShow();
+                    }, 1000);
+                }
+            } catch (e) {
+                // Cross-origin iframe, can't access content, but it's probably loaded
+                console.log('Cross-origin iframe, assuming loaded');
+                contentLoaded = true;
+                checkAndShow();
+            }
+        }
+
+        // Handle iframe load errors
+        function handleFrameError() {
+            hasError = true;
+            console.log('Iframe failed to load');
+            
+            // Update loading message to show error
+            const loadingText = document.getElementById('loadingText');
+            const loadingSubtext = document.getElementById('loadingSubtext');
+            
+            if (loadingText) {
+                loadingText.textContent = "Connection issue detected...";
+            }
+            if (loadingSubtext) {
+                loadingSubtext.textContent = "Retrying connection";
+            }
+            
+            // Still try to show after a delay
+            setTimeout(() => {
+                showChatbot();
+            }, 2000);
+        }
+
+        // Check if both conditions are met before showing chatbot
+        function checkAndShow() {
+            console.log('Check conditions - Frame:', frameLoaded, 'Content:', contentLoaded, 'MinTime:', minTimeElapsed);
+            
+            if (frameLoaded && contentLoaded && minTimeElapsed) {
+                showChatbot();
+            } else if (frameLoaded && minTimeElapsed) {
+                // If frame is loaded and min time passed, show anyway
+                setTimeout(() => {
+                    showChatbot();
+                }, 500);
+            }
+        }
+
+        // Show the chatbot iframe
+        function showChatbot() {
+            if (contentLoaded || frameLoaded) { // Prevent multiple calls
+                contentLoaded = true; // Mark as shown
+                clearInterval(messageInterval);
+                
+                // Update final messages
+                const loadingText = document.getElementById('loadingText');
+                const loadingSubtext = document.getElementById('loadingSubtext');
+                
+                if (loadingText) {
+                    loadingText.textContent = "Ready!";
+                }
+                if (loadingSubtext) {
+                    loadingSubtext.textContent = "Opening your chat session";
+                }
+                
+                // Fade out loading screen and show chatbot
+                setTimeout(() => {
+                    const loadingContainer = document.getElementById('loadingContainer');
+                    const chatbotFrame = document.getElementById('chatbotFrame');
+                    const blackOverlay = document.getElementById('blackOverlay');
+                    
+                    if (loadingContainer) {
+                        loadingContainer.classList.add('fade-out');
+                    }
+                    
+                    setTimeout(() => {
+                        // Show black overlay first to prevent white flash
+                        if (blackOverlay) {
+                            blackOverlay.style.display = 'block';
+                        }
+                        
+                        // Hide loading screen and show chatbot
+                        if (loadingContainer) {
+                            loadingContainer.style.display = 'none';
+                        }
+                        if (chatbotFrame) {
+                            chatbotFrame.style.display = 'block';
+                            chatbotFrame.style.opacity = '0';
+                            chatbotFrame.style.transition = 'opacity 0.5s ease-out';
+                        }
+                        
+                        // Wait a moment for iframe content to stabilize, then fade in
+                        setTimeout(() => {
+                            if (chatbotFrame) {
+                                chatbotFrame.style.opacity = '1';
+                            }
+                            
+                            // Remove black overlay after iframe is visible and content loaded
+                            setTimeout(() => {
+                                if (blackOverlay) {
+                                    blackOverlay.style.opacity = '0';
+                                    setTimeout(() => {
+                                        blackOverlay.style.display = 'none';
+                                    }, 300);
+                                }
+                            }, 800); // Give extra time for content to fully load
+                        }, 50);
+                        
+                        console.log('');
+                    }, 500);
+                }, 300);
+            }
+        }
+
+        // Absolute failsafe - show chatbot after maximum 8 seconds regardless
+        setTimeout(() => {
+            if (!contentLoaded) {
+                console.log('Failsafe: showing chatbot after 8 seconds');
+                frameLoaded = true; // Force show
+                showChatbot();
+            }
+        }, 8000);
+
+        // Progressive timeout - if nothing loads after 5 seconds, try redirect
+        setTimeout(() => {
+            if (!frameLoaded && !hasError) {
+                console.log('Progressive failsafe: redirecting after 5 seconds with no load');
+                window.location.href = 'https://typebot.co/popup-russian'; // Redirect to full page version
+            }
+        }, 5000);
+
+        // Handle any critical page errors
+        window.addEventListener('error', function(e) {
+            console.error('Page error:', e);
+            if (!contentLoaded) {
+                hasError = true;
+                // Try to show chatbot anyway
+                setTimeout(() => {
+                    showChatbot();
+                }, 1000);
+            }
+        });
+
+        // Log loading progress
+        console.log('AstroCoach loading page started');
+        setTimeout(() => {
+            console.log('Progress check - Frame:', frameLoaded, 'Content:', contentLoaded, 'MinTime:', minTimeElapsed);
+        }, 3000);
+    </script>
+</body>
+</html>
